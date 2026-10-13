@@ -3625,12 +3625,14 @@ name = "soundcraft-clap-host"
 version = "0.9.0"
 dependencies = [
  "clap-sys",
+ "libc",
  "libloading",
  "log",
  "serde",
  "soundcraft-dsp",
  "thiserror 2.0.21",
  "windows-sys 0.61.2",
+ "x11rb",
 ]
 
 [[package]]
