@@ -2084,7 +2084,7 @@ mod hostwin {
         }
 
         pub fn handle(&self) -> clap_window_handle {
-            clap_window_handle { x11: u64::from(self.id) }
+            clap_window_handle { x11: std::ffi::c_ulong::from(self.id) }
         }
 
         pub fn raise(&self) {

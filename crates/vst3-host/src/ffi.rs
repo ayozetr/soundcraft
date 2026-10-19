@@ -1733,6 +1733,9 @@ impl EditorLink {
         if !ok(unsafe { view.attached(win.parent(), platform) }) {
             // SAFETY: valid view; detach our frame again.
             unsafe { view.setFrame(std::ptr::null_mut()) };
+            // Release anything it registered while attaching, as `teardown` does.
+            #[cfg(all(unix, not(target_os = "macos")))]
+            frame.run_loop.clear();
             win.close();
             return Err("the editor could not attach to its window".into());
         }
