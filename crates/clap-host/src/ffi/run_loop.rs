@@ -157,10 +157,11 @@ mod tests {
     #[test]
     fn timers_and_descriptors_follow_registration() {
         let rl = RunLoop::default();
+        // Before registering: every timer's first tick is then later than `t0`.
+        let t0 = Instant::now();
         let a = rl.add_timer(10).unwrap();
         let b = rl.add_timer(0).unwrap();
         assert_ne!(a, b, "ids are unique");
-        let t0 = Instant::now();
         assert!(rl.due(t0).is_empty(), "not due yet");
         let mut due = rl.due(t0 + Duration::from_secs(1));
         due.sort_unstable();

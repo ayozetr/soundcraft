@@ -395,6 +395,8 @@ mod tests {
         let ticks = ComWrapper::new(Ticks::default());
         let timer = ticks.as_com_ref::<sb::Linux::ITimerHandler>().unwrap().as_ptr();
         let handler = ticks.as_com_ref::<sb::Linux::IEventHandler>().unwrap().as_ptr();
+        // Before registering: every timer's first tick is then later than `t0`.
+        let t0 = Instant::now();
         let mut fds = [0; 2];
         // SAFETY: `fds` holds the two descriptors `pipe` writes.
         assert_eq!(unsafe { libc::pipe(fds.as_mut_ptr()) }, 0);
@@ -405,7 +407,6 @@ mod tests {
             assert_ne!(rl.registerEventHandler(handler, -1), sb::kResultOk);
             assert_ne!(rl.registerTimer(std::ptr::null_mut(), 10), sb::kResultOk);
         }
-        let t0 = Instant::now();
         frame.run_loop.dispatch(t0);
         assert_eq!(ticks.timer.load(Ordering::Relaxed), 0, "not due yet");
         assert_eq!(ticks.fd.load(Ordering::Relaxed), 0, "nothing to read");
